@@ -3,80 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apartment Guide</title>
+  <title>Luxury Apartment</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; }
-    header { background: #1a1a2e; color: white; padding: 30px 20px; text-align: center; }
-    header h1 { font-size: 2.2rem; letter-spacing: 2px; }
-    header p { margin-top: 8px; font-size: 1rem; color: #aaa; }
-    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 40px 30px; max-width: 1200px; margin: 0 auto; }
-    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
-    .card:hover { transform: translateY(-5px); }
-    .card img { width: 100%; height: 220px; object-fit: cover; }
-    .card-body { padding: 16px; }
-    .card-body h3 { font-size: 1.1rem; margin-bottom: 6px; }
-    .card-body p { font-size: 0.9rem; color: #666; }
-    .info { background: white; max-width: 1200px; margin: 0 auto 40px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    .info h2 { margin-bottom: 15px; font-size: 1.5rem; color: #1a1a2e; }
-    .info ul { list-style: none; padding: 0; }
-    .info ul li { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
-    .info ul li:last-child { border-bottom: none; }
-    .info ul li span { font-weight: bold; color: #1a1a2e; margin-right: 8px; }
-    footer { text-align: center; padding: 20px; background: #1a1a2e; color: #aaa; font-size: 0.85rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #1c1c1e; }
+    .top-bar { padding: 16px 20px; font-size: 1rem; font-weight: 600; color: #1c1c1e; background: #f0f2f5; }
+    .hero { margin: 0 16px 24px; border-radius: 16px; overflow: hidden; position: relative; height: 260px; }
+    .hero img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; }
+    .hero-overlay h1 { color: white; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+    .hero-overlay p { color: rgba(255,255,255,0.85); font-size: 0.9rem; max-width: 340px; line-height: 1.4; }
+    .section { padding: 0 16px 24px; }
+    .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: #1c1c1e; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .card { background: white; border-radius: 14px; padding: 16px 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+    .card .icon { font-size: 1.6rem; }
+    .card .label { font-size: 0.85rem; font-weight: 600; color: #1c1c1e; }
+    .card .sub { font-size: 0.75rem; color: #888; margin-top: 2px; }
+    .card.warning .label { color: #e53935; }
+    .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .photo-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); aspect-ratio: 1; }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .nearby-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 700px) {
+      .grid, .grid-2, .photo-grid, .nearby-grid { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Apartment Guide</h1>
-    <p>Современные квартиры для комфортной жизни</p>
-  </header>
+  <div class="top-bar">Luxury Apartment</div>
 
-  <div class="gallery">
-    <div class="card">
-      <img src="images/1.jpg" alt="Фото квартиры 1" />
-      <div class="card-body">
-        <h3>Гостиная</h3>
-        <p>Просторная и светлая гостиная комната</p>
-      </div>
-    </div>
-    <div class="card">
-      <img src="images/2.jpg" alt="Фото квартиры 2" />
-      <div class="card-body">
-        <h3>Спальня</h3>
-        <p>Уютная спальня с современным ремонтом</p>
-      </div>
-    </div>
-    <div class="card">
-      <img src="images/3.jpg" alt="Фото квартиры 3" />
-      <div class="card-body">
-        <h3>Кухня</h3>
-        <p>Функциональная кухня с бытовой техникой</p>
-      </div>
-    </div>
-    <div class="card">
-      <img src="images/4.jpg" alt="Фото квартиры 4" />
-      <div class="card-body">
-        <h3>Ванная</h3>
-        <p>Чистая и современная ванная комната</p>
-      </div>
+  <div class="hero">
+    <img src="images/1.jpg" alt="Квартира" />
+    <div class="hero-overlay">
+      <h1>Добро пожаловать</h1>
+      <p>Мы подготовили для вас краткий гид по квартире, чтобы вы могли легко пользоваться всеми удобствами.</p>
     </div>
   </div>
 
-  <div class="info">
-    <h2>Информация об объекте</h2>
-    <ul>
-      <li><span>Площадь:</span> Укажите площадь</li>
-      <li><span>Комнат:</span> Укажите количество комнат</li>
-      <li><span>Этаж:</span> Укажите этаж</li>
-      <li><span>Адрес:</span> Укажите адрес</li>
-      <li><span>Цена:</span> Укажите цену</li>
-      <li><span>Контакт:</span> Укажите контакт</li>
-    </ul>
+  <div class="section">
+    <div class="section-title">Квартира</div>
+    <div class="grid">
+      <div class="card"><div class="icon">📶</div><div class="label">Wi-Fi</div></div>
+      <div class="card"><div class="icon">📺</div><div class="label">Телевизор</div></div>
+      <div class="card"><div class="icon">🔍</div><div class="label">Кухня</div></div>
+      <div class="card"><div class="icon">🚰</div><div class="label">Ванная</div></div>
+      <div class="card"><div class="icon">🪼</div><div class="label">Стиральная</div></div>
+      <div class="card"><div class="icon">🧴</div><div class="label">Гладильная доска + Утюг</div></div>
+      <div class="card"><div class="icon">🛌</div><div class="label">Комната</div></div>
+      <div class="card warning"><div class="icon">🚨</div><div class="label">ВНИМАНИЕ</div><div class="sub">Пожарная сигнализация</div></div>
+    </div>
   </div>
 
-  <footer>
-    &copy; 2026 Apartment Guide. Все права защищены.
-  </footer>
+  <div class="section">
+    <div class="section-title">Фотографии квартиры</div>
+    <div class="photo-grid">
+      <div class="photo-card"><img src="images/1.jpg" alt="Фото 1" /></div>
+      <div class="photo-card"><img src="images/2.jpg" alt="Фото 2" /></div>
+      <div class="photo-card"><img src="images/3.jpg" alt="Фото 3" /></div>
+      <div class="photo-card"><img src="images/4.jpg" alt="Фото 4" /></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Рядом с квартирой</div>
+    <div class="nearby-grid">
+      <div class="card"><div class="icon">☕</div><div class="label">Кофейня</div><div class="sub">Завтраки и кофе</div></div>
+      <div class="card"><div class="icon">💊</div><div class="label">Аптека</div><div class="sub">В этом доме</div></div>
+      <div class="card"><div class="icon">🛒</div><div class="label">Супермаркет</div><div class="sub">5 минут пешком</div></div>
+      <div class="card"><div class="icon">🚇</div><div class="label">МЦД</div><div class="sub">15 минут</div></div>
+      <div class="card"><div class="icon">🛁</div><div class="label">1000 мелочей</div><div class="sub">Магазин хозяйственных товаров</div></div>
+    </div>
+  </div>
+
 </body>
 </html>

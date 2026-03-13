@@ -212,7 +212,7 @@ function openPanel(title, isTV) {
   document.getElementById("panelTitle").innerText = title;
   document.getElementById("tvControls").style.display = isTV ? "block" : "none";
   currentSection = title;
-    if (!db) { renderGallery(); return; }
+    if (!db) { return; }
     var r = db.transaction("texts","readonly").objectStore("texts").get(title);
   r.onsuccess = function() {
     document.getElementById("instructionText").innerText = r.result || "";

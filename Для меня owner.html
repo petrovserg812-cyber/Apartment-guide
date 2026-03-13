@@ -229,3 +229,84 @@ function renderGallery() {
   var idx = db.transaction("photos","readonly").objectStore("photos").index("section");
   var r = idx.getAll(IDBKeyRange.only(currentSection));
   r.onsuccess = function() {
+      var photos = r.result;
+      currentPhotos = photos;
+      var gallery = document.getElementById('tvGallery');
+      gallery.innerHTML = '';
+      photos.forEach(function(photo, i) {
+        var box = document.createElement('div');
+        box.className = 'photo-box';
+        var img = document.createElement('img');
+        img.src = photo.src;
+        img.onclick = (function(idx) { return function() { openModal(idx); }; })(i);
+        var del = document.createElement('button');
+        del.className = 'delete';
+        del.textContent = '×';
+        del.onclick = (function(id) { return function(e) { e.stopPropagation(); deletePhoto(id); }; })(photo.id);
+        box.appendChild(img);
+        box.appendChild(del);
+        gallery.appendChild(box);
+      });
+    };
+  }
+
+  function deletePhoto(id) {
+    var tx = db.transaction('photos', 'readwrite');
+    tx.objectStore('photos').delete(id);
+    tx.oncomplete = function() { renderGallery(); };
+  }
+
+  function openModal(idx) {
+    currentIndex = idx;
+    document.getElementById('modalImg').src = currentPhotos[idx].src;
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  function openNearbyPanel(title) {
+    document.getElementById('nearbyPanel').style.display = 'block';
+    document.getElementById('nearbyPanelTitle').innerText = title;
+    nearbySection = title;
+    if (!db) { return; }
+    var r = db.transaction('texts','readonly').objectStore('texts').get('nearby_' + title);
+    r.onsuccess = function() {
+      document.getElementById('nearbyText').innerText = r.result || '';
+    };
+    renderNearbyGallery();
+  }
+
+  function closeNearbyPanel() {
+    document.getElementById('nearbyPanel').style.display = 'none';
+  }
+
+  function renderNearbyGallery() {
+    if (!nearbySection || !db) return;
+    var idx = db.transaction('photos','readonly').objectStore('photos').index('section');
+    var r = idx.getAll(IDBKeyRange.only('nearby_' + nearbySection));
+    r.onsuccess = function() {
+      nearbyPhotos = r.result;
+      var gallery = document.getElementById('nearbyGallery');
+      gallery.innerHTML = '';
+      r.result.forEach(function(photo, i) {
+        var box = document.createElement('div');
+        box.className = 'photo-box';
+        var img = document.createElement('img');
+        img.src = photo.src;
+        var del = document.createElement('button');
+        del.className = 'delete';
+        del.textContent = '×';
+        del.onclick = (function(id) { return function(e) { e.stopPropagation(); deleteNearbyPhoto(id); }; })(photo.id);
+        box.appendChild(img);
+        box.appendChild(del);
+        gallery.appendChild(box);
+      });
+    };
+  }
+
+  function deleteNearbyPhoto(id) {
+    var tx = db.transaction('photos','readwrite');
+    tx.objectStore('photos').delete(id);
+    tx.oncomplete = function() { renderNearbyGallery(); };
+  }
+</script>
+</body>
+</html>

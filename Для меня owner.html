@@ -264,7 +264,7 @@ function renderGallery() {
 
   function openNearbyPanel(title) {
     document.getElementById('nearbyPanel').style.display = 'block';
-    document.getElementById('nearbyPanelTitle').innerText = title;
+    document.getElementById('nearbyTitle').innerText = title;
     nearbySection = title;
     if (!db) { return; }
     var r = db.transaction('texts','readonly').objectStore('texts').get('nearby_' + title);

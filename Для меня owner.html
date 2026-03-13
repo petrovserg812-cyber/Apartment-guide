@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Luxury Apartment – Хозяин</title>
+//fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;-webkit-tap-highlight-color:transparent}
+.container{max-width:1100px;margin:auto;padding:24px 18px 80px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.brand{font-family:'Playfair Display',serif;font-size:22px}
+.lang{display:flex;gap:8px}
+.lang button{border:none;padding:6px 10px;border-radius:8px;background:#e2e8f0;font-size:12px}
+.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511') center/cover no-repeat}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55))}
+.hero-content{position:relative;z-index:2;max-width:520px;margin-left:20px}
+.hero h1{font-family:'Playfair Display',serif;font-size:32px;margin:0 0 6px}
+.hero p{font-size:14px;opacity:.9;margin:0}
+.section-title{font-size:18px;font-weight:600;margin:34px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:white;padding:18px;border-radius:18px;box-shadow:0 8px 22px rgba(0,0,0,.06);cursor:pointer;transition:.2s}
+.card:active{transform:scale(.97)}
+.icon{font-size:26px;margin-bottom:6px}
+.card h3{margin:4px 0;font-size:15px}
+.card p{margin:0;font-size:12px;color:#64748b}
+.instruction-panel{display:none;background:white;padding:20px;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.1);margin-bottom:20px}
+.close-btn{background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:6px;margin-bottom:10px;cursor:pointer}
+.edit-text{border:2px dashed #cbd5e1;padding:12px;border-radius:10px;margin-bottom:14px;background:#f8fafc;font-size:14px;min-height:60px}
+.button{background:#0f172a;color:white;border:none;padding:10px 14px;border-radius:10px;margin-bottom:14px;width:100%;cursor:pointer}
+.tv-gallery{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;flex-wrap:wrap;margin-top:10px}
+.photo-box{position:relative;display:inline-block}
+.photo-box img{height:120px;border-radius:12px;cursor:pointer;display:block}
+.delete{position:absolute;top:4px;right:4px;background:red;border:none;color:white;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;line-height:22px;text-align:center;padding:0}
+.gallery{margin-top:30px;display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.gallery img{height:140px;border-radius:14px}
+.footer{margin-top:40px;padding:20px;background:#0f172a;color:white;border-radius:20px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:999}
+.modal img{max-width:95%;max-height:85%;border-radius:12px}
+.modal button{position:absolute;background:none;border:none;color:white;font-size:38px;cursor:pointer}
+#prevBtn{left:16px}
+#nextBtn{right:16px}
+@media(min-width:900px){
+.grid{grid-template-columns:repeat(4,1fr)}
+.hero{height:360px;padding:60px}
+.hero h1{font-size:44px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));overflow:visible}
+.gallery img{height:180px;width:100%;object-fit:cover}
+.tv-gallery img{height:150px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+<div class="brand">Luxury Apartment</div>
+<div class="lang"><button>RU</button><button>EN</button><button>DE</button></div>
+</header>
+
+<section class="hero">
+<div class="hero-content">
+<h1>Добро пожаловать</h1>
+<p>Мы подготовили для вас краткий гид по квартире, чтобы вы могли легко пользоваться всеми удобствами.</p>
+</div>
+</section>
+
+<div class="section-title">Квартира</div>
+
+<div id="panel" class="instruction-panel">
+<button class="close-btn" onclick="closePanel()">Закрыть</button>
+<h3 id="panelTitle"></h3>
+<div id="instructionText" contenteditable="true" class="edit-text">Введите инструкцию здесь.</div>
+<div id="tvControls" style="display:none">
+<button class="button" onclick="document.getElementById('upload').click()">Загрузить фото</button>
+<input type="file" id="upload" accept="image/*" multiple style="display:none">
+<div id="tvGallery" class="tv-gallery"></div>
+</div>
+</div>
+
+<section class="grid">
+<div class="card" onclick="openPanel('WiFi',true)"><div class="icon">📶</div><h3>Wi-Fi</h3></div>
+<div class="card" onclick="openPanel('Телевизор',true)"><div class="icon">📺</div><h3>Телевизор</h3></div>
+<div class="card" onclick="openPanel('Кухня',true)"><div class="icon">🍳</div><h3>Кухня</h3></div>
+<div class="card" onclick="openPanel('Ванная',true)"><div class="icon">🚿</div><h3>Ванная</h3></div>
+<div class="card" onclick="openPanel('Стиральная',true)"><div class="icon">🧺</div><h3>Стиральная</h3></div>
+<div class="card" onclick="openPanel('Гладильная',true)"><div class="icon">🧴</div><h3>Гладильная доска + Утюг</h3></div>
+<div class="card" onclick="openPanel('Комната',true)"><div class="icon">🛏</div><h3>Комната</h3></div>
+<div class="card" onclick="openPanel('Пожарная',true)"><div class="icon">🚨</div><h3>ВНИМАНИЕ</h3><p>Пожарная сигнализация</p></div>
+</section>
+
+<div class="section-title">Фотографии квартиры</div>
+<section class="gallery">
+<img src="images/1.jpg" alt="Фото 1">
+<img src="images/2.jpg" alt="Фото 2">
+<img src="images/3.jpg" alt="Фото 3">
+<img src="images/4.jpg" alt="Фото 4">
+</section>
+
+<div class="section-title">Рядом с квартирой</div>
+<section class="grid">
+<div class="card" onclick="openNearbyPanel('Кофейня')"><div class="icon">☕</div><h3>Кофейня</h3><p>Завтраки и кофе</p></div>
+<div class="card" onclick="openNearbyPanel('Аптека')"><div class="icon">💊</div><h3>Аптека</h3><p>В этом доме</p></div>
+<div class="card" onclick="openNearbyPanel('Супермаркет')"><div class="icon">🛒</div><h3>Супермаркет</h3><p>5 минут пешком</p></div>
+<div class="card" onclick="openNearbyPanel('МЦД')"><div class="icon">🚇</div><h3>МЦД</h3><p>15 минут</p></div>
+<div class="card" onclick="openNearbyPanel('1000 мелочей')"><div class="icon">🧰</div><h3>1000 мелочей</h3><p>Магазин хозяйственных товаров</p></div>
+</section>
+
+<div id="nearbyPanel" class="instruction-panel">
+<button class="close-btn" onclick="closeNearbyPanel()">Закрыть</button>
+<h3 id="nearbyTitle"></h3>
+<div id="nearbyText" contenteditable="true" class="edit-text">Введите описание здесь.</div>
+<button class="button" onclick="document.getElementById('nearbyUpload').click()">Загрузить фото</button>
+<input type="file" id="nearbyUpload" accept="image/*" multiple style="display:none">
+<div id="nearbyGallery" class="tv-gallery"></div>
+</div>
+
+<footer class="footer">
+<div><strong>Нужна помощь?</strong> WhatsApp +49 XXX XXX XXXX</div>
+<div>Отсканируйте QR-код чтобы открыть этот гид</div>
+</footer>
+</div>
+
+<div id="modal" class="modal">
+<button id="prevBtn">&#10094;</button>
+<img id="modalImg" alt="">
+<button id="nextBtn">&#10095;</button>
+</div>
+
+<script>
+var db;
+var currentSection = null;
+var currentPhotos = [];
+var currentIndex = 0;
+var nearbySection = null;
+var nearbyPhotos = [];
+
+var dbReq = indexedDB.open("ApartmentGuideDB", 1);
+
+dbReq.onupgradeneeded = function(e) {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("photos")) {
+    var s = db.createObjectStore("photos", {keyPath:"id", autoIncrement:true});
+    s.createIndex("section", "section", {unique:false});
+  }
+  if (!db.objectStoreNames.contains("texts")) {
+    db.createObjectStore("texts");
+  }
+};
+
+dbReq.onsuccess = function(e) {
+  db = e.target.result;
+
+  document.getElementById("instructionText").addEventListener("input", function() {
+    if (!currentSection) return;
+    db.transaction("texts","readwrite").objectStore("texts").put(this.innerText, currentSection);
+  });
+
+  document.getElementById("nearbyText").addEventListener("input", function() {
+    if (!nearbySection) return;
+    db.transaction("texts","readwrite").objectStore("texts").put(this.innerText, "nearby_" + nearbySection);
+  });
+
+  document.getElementById("upload").addEventListener("change", function() {
+    var files = Array.prototype.slice.call(this.files);
+    files.forEach(function(file) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var tx = db.transaction("photos","readwrite");
+        tx.objectStore("photos").add({section: currentSection, src: ev.target.result});
+        tx.oncomplete = function() { renderGallery(); };
+      };
+      reader.readAsDataURL(file);
+    });
+    this.value = "";
+  });
+
+  document.getElementById("nearbyUpload").addEventListener("change", function() {
+    var files = Array.prototype.slice.call(this.files);
+    files.forEach(function(file) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var tx = db.transaction("photos","readwrite");
+        tx.objectStore("photos").add({section: "nearby_" + nearbySection, src: ev.target.result});
+        tx.oncomplete = function() { renderNearbyGallery(); };
+      };
+      reader.readAsDataURL(file);
+    });
+    this.value = "";
+  });
+
+  document.getElementById("modal").addEventListener("click", function() {
+    this.style.display = "none";
+  });
+
+  document.getElementById("prevBtn").addEventListener("click", function(e) {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+    document.getElementById("modalImg").src = currentPhotos[currentIndex].src;
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", function(e) {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % currentPhotos.length;
+    document.getElementById("modalImg").src = currentPhotos[currentIndex].src;
+  });
+};
+
+function openPanel(title, isTV) {
+  document.getElementById("panel").style.display = "block";
+  document.getElementById("panelTitle").innerText = title;
+  document.getElementById("tvControls").style.display = isTV ? "block" : "none";
+  currentSection = title;
+  var r = db.transaction("texts","readonly").objectStore("texts").get(title);
+  r.onsuccess = function() {
+    document.getElementById("instructionText").innerText = r.result || "";
+  };
+  renderGallery();
+}
+
+function closePanel() {
+  document.getElementById("panel").style.display = "none";
+}
+
+function renderGallery() {
+  if (!currentSection) return;
+  var idx = db.transaction("photos","readonly").objectStore("photos").index("section");
+  var r = idx.getAll(IDBKeyRange.only(currentSection));
+  r.onsuccess = function() {

@@ -149,13 +149,13 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 <div class="card" onclick="openNearbyPanel('1000 мелочей')"><div class="icon">🧰</div><h3>1000 мелочей</h3><p>Магазин хозяйственных товаров</p></div>
 </section>
 
-<div id=\"nearbyPanel\" class=\"instruction-panel\">
-<button class=\"close-btn\" onclick=\"closeNearbyPanel()\">Закрыть</button>
-<h3 id=\"nearbyTitle\"></h3>
-<div id=\"nearbyText\" contenteditable=\"true\" class=\"edit-text\">Введите описание здесь.</div>
-<button class=\"button owner-only\" onclick=\"nearbyUpload.click()\">Загрузить фото</button>
-<input type=\"file\" id=\"nearbyUpload\" accept=\"image/jpeg\" multiple hidden>
-<div id=\"nearbyGallery\" class=\"tv-gallery\"></div>
+<div id="nearbyPanel" class="instruction-panel">
+<button class="close-btn" onclick="closeNearbyPanel()">Закрыть</button>
+<h3 id="nearbyTitle"></h3>
+<div id="nearbyText" contenteditable="true" class="edit-text">Введите описание здесь.</div>
+<button class="button owner-only" onclick="nearbyUpload.click()">Загрузить фото</button>
+<input type="file" id="nearbyUpload" accept=\"image/jpeg\" multiple hidden>
+<div id="nearbyGallery" class="tv-gallery"></div>
 </div>
 
 <footer class="footer">

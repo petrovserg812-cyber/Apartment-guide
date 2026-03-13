@@ -111,7 +111,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 <h3 id="panelTitle"></h3>
 <div id="instructionText" contenteditable="true" class="edit-text">Введите инструкцию здесь.</div>
 <div id="tvControls" style="display:none">
-<button class="button" onclick="upload.click()">Загрузить фото</button>
+<button class="button owner-only" onclick="upload.click()">Загрузить фото</button>
 <input type="file" id="upload" accept="image/jpeg" multiple hidden>
 <div id="tvGallery" class="tv-gallery"></div>
 </div>
@@ -149,13 +149,13 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 <div class="card" onclick="openNearbyPanel('1000 мелочей')"><div class="icon">🧰</div><h3>1000 мелочей</h3><p>Магазин хозяйственных товаров</p></div>
 </section>
 
-<div id="nearbyPanel" class="instruction-panel">
-<button class="close-btn" onclick="closeNearbyPanel()">Закрыть</button>
-<h3 id="nearbyTitle"></h3>
-<div id="nearbyText" contenteditable="true" class="edit-text">Введите описание здесь.</div>
-<button class="button" onclick="nearbyUpload.click()">Загрузить фото</button>
-<input type="file" id="nearbyUpload" accept="image/jpeg" multiple hidden>
-<div id="nearbyGallery" class="tv-gallery"></div>
+<div id=\"nearbyPanel\" class=\"instruction-panel\">
+<button class=\"close-btn\" onclick=\"closeNearbyPanel()\">Закрыть</button>
+<h3 id=\"nearbyTitle\"></h3>
+<div id=\"nearbyText\" contenteditable=\"true\" class=\"edit-text\">Введите описание здесь.</div>
+<button class=\"button owner-only\" onclick=\"nearbyUpload.click()\">Загрузить фото</button>
+<input type=\"file\" id=\"nearbyUpload\" accept=\"image/jpeg\" multiple hidden>
+<div id=\"nearbyGallery\" class=\"tv-gallery\"></div>
 </div>
 
 <footer class="footer">
@@ -172,187 +172,207 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 </div>
 
 <script>
+// Настройки режима: поменяй на false перед выкладкой для гостей
+const isOwner = true; 
 
-let db
-const request=indexedDB.open("ApartmentGuideDB",1)
+let db;
+const request = indexedDB.open(\"ApartmentGuideDB\", 1);
 
-request.onupgradeneeded=e=>{
- db=e.target.result
- if(!db.objectStoreNames.contains("photos")){
-  const store=db.createObjectStore("photos",{keyPath:"id",autoIncrement:true})
-  store.createIndex("section","section",{unique:false})
- }
- if(!db.objectStoreNames.contains("texts")) db.createObjectStore("texts")
+request.onupgradeneeded = e => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains(\"photos\")) {
+    const store = db.createObjectStore(\"photos\", { keyPath: \"id\", autoIncrement: true });
+    store.createIndex(\"section\", \"section\", { unique: false });
+  }
+  if (!db.objectStoreNames.contains(\"texts\")) db.createObjectStore(\"texts\");
+};
+
+request.onsuccess = e => {
+  db = e.target.result;
+  init();
+};
+
+function init() {
+  const upload = document.getElementById(\"upload\");
+  const gallery = document.getElementById(\"tvGallery\");
+  const instructionText = document.getElementById(\"instructionText\");
+  const nearbyPanel = document.getElementById(\"nearbyPanel\");
+  const nearbyTitle = document.getElementById(\"nearbyTitle\");
+  const nearbyText = document.getElementById(\"nearbyText\");
+  const nearbyUpload = document.getElementById(\"nearbyUpload\");
+  const nearbyGallery = document.getElementById(\"nearbyGallery\");
+  const modal = document.getElementById(\"modal\");
+  const modalImg = document.getElementById(\"modalImg\");
+  const prevBtn = document.getElementById(\"prevBtn\");
+  const nextBtn = document.getElementById(\"nextBtn\");
+
+  let currentSection = null;
+  let currentPhotos = [];
+  let currentIndex = 0;
+  let nearbySection = null;
+  let nearbyPhotos = [];
+
+  // Применяем режим гостя/хозяина
+  if (!isOwner) {
+    instructionText.contentEditable = \"false\";
+    nearbyText.contentEditable = \"false\";
+    document.querySelectorAll(\".owner-only\").forEach(el => el.style.display = \"none\");
+  }
+
+  function saveText(section, text) {
+    db.transaction(\"texts\", \"readwrite\").objectStore(\"texts\").put(text, section);
+  }
+
+  function loadText(section) {
+    return new Promise(resolve => {
+      const req = db.transaction(\"texts\", \"readonly\").objectStore(\"texts\").get(section);
+      req.onsuccess = () => resolve(req.result || \"Введите текст\");
+    });
+  }
+
+  function savePhoto(section, src) {
+    db.transaction(\"photos\", \"readwrite\").objectStore(\"photos\").add({ section, src });
+  }
+
+  function deletePhoto(id) {
+    db.transaction(\"photos\", \"readwrite\").objectStore(\"photos\").delete(id);
+  }
+
+  function loadPhotos(section) {
+    return new Promise(resolve => {
+      const store = db.transaction(\"photos\", \"readonly\").objectStore(\"photos\").index(\"section\");
+      const req = store.getAll(IDBKeyRange.only(section));
+      req.onsuccess = () => resolve(req.result || []);
+    });
+  }
+
+  window.closePanel = () => document.getElementById(\"panel\").style.display = \"none\";
+
+  window.openPanel = async (title, isTV = false) => {
+    document.getElementById(\"panel\").style.display = \"block\";
+    document.getElementById(\"panelTitle\").innerText = title;
+    // Показываем кнопки загрузки только если мы в режиме хозяина
+    document.getElementById(\"tvControls\").style.display = (isOwner && isTV) ? \"block\" : \"none\";
+    currentSection = title;
+    const text = await loadText(title);
+    instructionText.innerText = text;
+    renderGallery();
+  };
+
+  instructionText.addEventListener(\"input\", () => {
+    if (!currentSection || !isOwner) return;
+    saveText(currentSection, instructionText.innerText);
+  });
+
+  async function renderGallery() {
+    if (!currentSection) return;
+    const photos = await loadPhotos(currentSection);
+    currentPhotos = photos;
+    gallery.innerHTML = \"\";
+    photos.forEach((photo, i) => {
+      const box = document.createElement(\"div\");
+      box.className = \"photo-box\";
+      const img = document.createElement(\"img\");
+      img.src = photo.src;
+      img.onclick = () => openModal(i);
+      
+      if (isOwner) {
+        const del = document.createElement(\"button\");
+        del.className = \"delete\";
+        del.innerHTML = \"×\";
+        del.onclick = () => { deletePhoto(photo.id); renderGallery(); };
+        box.appendChild(del);
+      }
+      
+      box.appendChild(img);
+      gallery.appendChild(box);
+    });
+  }
+
+  upload.addEventListener(\"change\", function () {
+    const files = [...this.files];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => { savePhoto(currentSection, e.target.result); renderGallery(); };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  function openModal(index) {
+    currentIndex = index;
+    modal.style.display = \"flex\";
+    showImage();
+  }
+
+  function showImage() { modalImg.src = currentPhotos[currentIndex].src; }
+
+  prevBtn.onclick = e => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+    showImage();
+  };
+
+  nextBtn.onclick = e => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % currentPhotos.length;
+    showImage();
+  };
+
+  modal.onclick = () => modal.style.display = \"none\";
+
+  window.openNearbyPanel = async (title) => {
+    nearbyPanel.style.display = \"block\";
+    nearbyTitle.innerText = title;
+    nearbySection = title;
+    nearbyText.innerText = await loadText(\"nearby_\" + title);
+    loadNearbyPhotos();
+  };
+
+  window.closeNearbyPanel = () => nearbyPanel.style.display = \"none\";
+
+  nearbyText.addEventListener(\"input\", () => {
+    if (!nearbySection || !isOwner) return;
+    saveText(\"nearby_\" + nearbySection, nearbyText.innerText);
+  });
+
+  async function loadNearbyPhotos() {
+    const photos = await loadPhotos(\"nearby_\" + nearbySection);
+    nearbyPhotos = photos;
+    renderNearbyGallery();
+  }
+
+  function renderNearbyGallery() {
+    nearbyGallery.innerHTML = \"\";
+    nearbyPhotos.forEach((photo, i) => {
+      const box = document.createElement(\"div\");
+      box.className = \"photo-box\";
+      const img = document.createElement(\"img\");
+      img.src = photo.src;
+      img.onclick = () => { currentPhotos = nearbyPhotos; openModal(i); };
+
+      if (isOwner) {
+        const del = document.createElement(\"button\");
+        del.className = \"delete\";
+        del.innerHTML = \"×\";
+        del.onclick = () => { deletePhoto(photo.id); loadNearbyPhotos(); };
+        box.appendChild(del);
+      }
+
+      box.appendChild(img);
+      nearbyGallery.appendChild(box);
+    });
+  }
+
+  nearbyUpload.addEventListener(\"change\", function () {
+    if (!nearbySection) return;
+    const files = [...this.files];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => { savePhoto(\"nearby_\" + nearbySection, e.target.result); loadNearbyPhotos(); };
+      reader.readAsDataURL(file);
+    });
+  });
 }
-request.onsuccess=e=>db=e.target.result
-
-const upload=document.getElementById("upload")
-const gallery=document.getElementById("tvGallery")
-const instructionText=document.getElementById("instructionText")
-
-const nearbyPanel=document.getElementById("nearbyPanel")
-const nearbyTitle=document.getElementById("nearbyTitle")
-const nearbyText=document.getElementById("nearbyText")
-const nearbyUpload=document.getElementById("nearbyUpload")
-const nearbyGallery=document.getElementById("nearbyGallery")
-
-const modal=document.getElementById("modal")
-const modalImg=document.getElementById("modalImg")
-const prevBtn=document.getElementById("prevBtn")
-const nextBtn=document.getElementById("nextBtn")
-
-let currentSection=null
-let currentPhotos=[]
-let currentIndex=0
-
-let nearbySection=null
-let nearbyPhotos=[]
-
-function saveText(section,text){db.transaction("texts","readwrite").objectStore("texts").put(text,section)}
-
-function loadText(section){
- return new Promise(resolve=>{
-  const req=db.transaction("texts","readonly").objectStore("texts").get(section)
-  req.onsuccess=()=>resolve(req.result||"Введите текст")
- })
-}
-
-function savePhoto(section,src){db.transaction("photos","readwrite").objectStore("photos").add({section,src})}
-function deletePhoto(id){db.transaction("photos","readwrite").objectStore("photos").delete(id)}
-
-function loadPhotos(section){
- return new Promise(resolve=>{
-  const store=db.transaction("photos","readonly").objectStore("photos").index("section")
-  const req=store.getAll(IDBKeyRange.only(section))
-  req.onsuccess=()=>resolve(req.result||[])
- })
-}
-
-function closePanel(){document.getElementById("panel").style.display="none"}
-
-async function openPanel(title,isTV=false){
- document.getElementById("panel").style.display="block"
- document.getElementById("panelTitle").innerText=title
- document.getElementById("tvControls").style.display=isTV?"block":"none"
- currentSection=title
- const text=await loadText(title)
- instructionText.innerText=text
- renderGallery()
-}
-
-instructionText.addEventListener("input",()=>{
- if(!currentSection)return
- saveText(currentSection,instructionText.innerText)
-})
-
-async function renderGallery(){
- if(!currentSection)return
- const photos=await loadPhotos(currentSection)
- currentPhotos=photos
- gallery.innerHTML=""
- photos.forEach((photo,i)=>{
-  const box=document.createElement("div")
-  box.className="photo-box"
-
-  const img=document.createElement("img")
-  img.src=photo.src
-  img.onclick=()=>openModal(i)
-
-  const del=document.createElement("button")
-  del.className="delete"
-  del.innerHTML="×"
-  del.onclick=()=>{deletePhoto(photo.id);renderGallery()}
-
-  box.appendChild(img)
-  box.appendChild(del)
-  gallery.appendChild(box)
- })
-}
-
-upload.addEventListener("change",function(){
- const files=[...this.files]
- files.forEach(file=>{
-  const reader=new FileReader()
-  reader.onload=e=>{savePhoto(currentSection,e.target.result);renderGallery()}
-  reader.readAsDataURL(file)
- })
-})
-
-function openModal(index){
- currentIndex=index
- modal.style.display="flex"
- showImage()
-}
-
-function showImage(){modalImg.src=currentPhotos[currentIndex].src}
-
-prevBtn.onclick=e=>{
- e.stopPropagation()
- currentIndex=(currentIndex-1+currentPhotos.length)%currentPhotos.length
- showImage()
-}
-
-nextBtn.onclick=e=>{
- e.stopPropagation()
- currentIndex=(currentIndex+1)%currentPhotos.length
- showImage()
-}
-
-modal.onclick=()=>modal.style.display="none"
-
-async function openNearbyPanel(title){
- nearbyPanel.style.display="block"
- nearbyTitle.innerText=title
- nearbySection=title
- nearbyText.innerText=await loadText("nearby_"+title)
- loadNearbyPhotos()
-}
-
-function closeNearbyPanel(){nearbyPanel.style.display="none"}
-
-nearbyText.addEventListener("input",()=>{
- if(!nearbySection)return
- saveText("nearby_"+nearbySection,nearbyText.innerText)
-})
-
-async function loadNearbyPhotos(){
- const photos=await loadPhotos("nearby_"+nearbySection)
- nearbyPhotos=photos
- renderNearbyGallery()
-}
-
-function renderNearbyGallery(){
- nearbyGallery.innerHTML=""
- nearbyPhotos.forEach((photo,i)=>{
-  const box=document.createElement("div")
-  box.className="photo-box"
-
-  const img=document.createElement("img")
-  img.src=photo.src
-  img.onclick=()=>{currentPhotos=nearbyPhotos;openModal(i)}
-
-  const del=document.createElement("button")
-  del.className="delete"
-  del.innerHTML="×"
-  del.onclick=()=>{deletePhoto(photo.id);loadNearbyPhotos()}
-
-  box.appendChild(img)
-  box.appendChild(del)
-  nearbyGallery.appendChild(box)
- })
-}
-
-nearbyUpload.addEventListener("change",function(){
- if(!nearbySection)return
- const files=[...this.files]
- files.forEach(file=>{
-  const reader=new FileReader()
-  reader.onload=e=>{savePhoto("nearby_"+nearbySection,e.target.result);loadNearbyPhotos()}
-  reader.readAsDataURL(file)
- })
-})
-
 </script>
-
 </body>
 </html>

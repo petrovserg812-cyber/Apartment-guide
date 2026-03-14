@@ -139,6 +139,17 @@ var currentPhotos = [];
 var currentIndex = 0;
 var nearbySection = null;
 var nearbyPhotos = [];
+  // Static photos from repository
+var staticPhotos = {
+  'Wi-Fi': ['photos/wifi/1773434430780.jpg', 'photos/wifi/1773434511079.jpg'],
+  'Телевизор': [],
+  'Кухня': [],
+  'Ванная': [],
+  'Стиральная': [],
+  'Гладильная доска + Утюг': [],
+  'Комната': [],
+  'ВНИМАНИЕ': []
+};
 
 var dbReq = indexedDB.open("ApartmentGuideDB", 1);
 
@@ -236,6 +247,12 @@ function renderGallery() {
   r.onsuccess = function() {
       var photos = r.result;
       currentPhotos = photos;
+            // Add static photos from repository
+        var staticPhotosList = staticPhotos[currentSection] || [];
+        var staticPhotoObjects = staticPhotosList.map(function(src, i) {
+          return {id: 'static_' + i, src: src, isStatic: true};
+        });
+        photos = staticPhotoObjects.concat(photos);
       var gallery = document.getElementById('tvGallery');
       gallery.innerHTML = '';
       photos.forEach(function(photo, i) {
@@ -244,12 +261,13 @@ function renderGallery() {
         var img = document.createElement('img');
         img.src = photo.src;
         img.onclick = (function(idx) { return function() { openModal(idx); }; })(i);
-        var del = document.createElement('button');
+                if (!photo.isStatic) { var del = document.createElement('button');
         del.className = 'delete';
         del.textContent = '×';
         del.onclick = (function(id) { return function(e) { e.stopPropagation(); deletePhoto(id); }; })(photo.id);
         box.appendChild(img);
         box.appendChild(del);
+                                              }
         gallery.appendChild(box);
       });
     };

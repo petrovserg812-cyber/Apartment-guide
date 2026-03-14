@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Apartment Guide - Guest</title>
+<style>
+body { margin: 0; padding: 0; }
+iframe { width: 100%; height: 100vh; border: none; }
+</style>
+</head>
+<body>
+<iframe src="owner.html" id="guestFrame"></iframe>
+<script>
+window.addEventListener('load', function() {
+  // Hide edit buttons and make fields readonly via iframe messaging
+  const frame = document.getElementById('guestFrame');
+  frame.onload = function() {
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      // Hide upload buttons
+      const buttons = doc.querySelectorAll('.button');
+      buttons.forEach(b => b.style.display = 'none');
+      // Make text fields readonly
+      const editText = doc.querySelectorAll('.edit-text');
+      editText.forEach(t => t.contentEditable = 'false');
+      // Hide delete buttons  
+      const delBtns = doc.querySelectorAll('.delete');
+      delBtns.forEach(d => d.style.display = 'none');
+    } catch(e) {
+      console.log('Cross-origin restriction');
+    }
+  };
+});
+</script>
+</body>
+</html>

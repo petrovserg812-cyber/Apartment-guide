@@ -226,6 +226,7 @@ function closePanel() {
 
 function renderGallery() {
   if (!currentSection) return;
+    if (!db) return;
   var idx = db.transaction("photos","readonly").objectStore("photos").index("section");
   var r = idx.getAll(IDBKeyRange.only(currentSection));
   r.onsuccess = function() {

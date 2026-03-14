@@ -49,6 +49,10 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .gallery img{height:180px;width:100%;object-fit:cover}
 .tv-gallery img{height:150px}
 }
+  /* Guest mode styles */
+  body.guest-mode .button { display: none !important; }
+  body.guest-mode .delete { display: none !important; }
+  body.guest-mode .edit-text { pointer-events: none; cursor: default; border: 2px solid #cbd5e1 !important; }
 </style>
 </head>
 <body>
@@ -309,23 +313,9 @@ function renderGallery() {
     tx.oncomplete = function() { renderNearbyGallery(); };
   }
 
-  // Guest mode detection
-if (window.location.search.includes('guest=1')) {
-  // Hide upload buttons
-  document.querySelectorAll('.button').forEach(btn => btn.style.display = 'none');
-  // Make edit fields read-only
-  document.querySelectorAll('.edit-text').forEach(field => {
-    field.contentEditable = 'false';
-    field.style.cursor = 'default';
-    field.style.border = '2px solid #cbd5e1';
-  });
-  // Hide delete buttons
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-      document.querySelectorAll('.delete').forEach(btn => btn.style.display = 'none');
-    }, 500);
-  });
-}
+  if (window.location.search.includes('guest=1')) {
+        document.body.classList.add('guest-mode');
+    }
 </script>
 </body>
 </html>

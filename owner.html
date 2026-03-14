@@ -261,11 +261,12 @@ function renderGallery() {
         var img = document.createElement('img');
         img.src = photo.src;
         img.onclick = (function(idx) { return function() { openModal(idx); }; })(i);
-                if (!photo.isStatic) { var del = document.createElement('button');
+                box.appendChild(img);        
+        if (!photo.isStatic) { var del = document.createElement('button');
         del.className = 'delete';
         del.textContent = '×';
         del.onclick = (function(id) { return function(e) { e.stopPropagation(); deletePhoto(id); }; })(photo.id);
-        box.appendChild(img);
+      
         box.appendChild(del);
                                               }
         gallery.appendChild(box);

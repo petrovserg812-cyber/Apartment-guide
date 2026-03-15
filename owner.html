@@ -245,14 +245,18 @@ function renderGallery() {
   var idx = db.transaction("photos","readonly").objectStore("photos").index("section");
   var r = idx.getAll(IDBKeyRange.only(currentSection));
   r.onsuccess = function() {
-      var photos = r.result;
-      currentPhotos = photos;
-            // Add static photos from repository
-        var staticPhotosList = staticPhotos[currentSection] || [];
-        var staticPhotoObjects = staticPhotosList.map(function(src, i) {
-          return {id: 'static_' + i, src: src, isStatic: true};
-        });
-        photos = staticPhotoObjects.concat(photos);
+     var photos = r.result;
+
+// Add static photos from repository
+var staticPhotosList = staticPhotos[currentSection] || [];
+var staticPhotoObjects = staticPhotosList.map(function(src, i) {
+  return {id: 'static_' + i, src: src, isStatic: true};
+});
+
+photos = staticPhotoObjects.concat(photos);
+
+// важно!
+currentPhotos = photos;
       var gallery = document.getElementById('tvGallery');
       gallery.innerHTML = '';
       photos.forEach(function(photo, i) {

@@ -15,7 +15,7 @@ body{margin:0;font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;-w
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .brand{font-family:'Playfair Display',serif;font-size:22px}
 
-.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('images/hero.jpg') center/cover no-repeat}
+.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('images/apartment.jpg') center/cover no-repeat}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.25))}
 .hero-content{position:relative;z-index:2;max-width:520px}
 .hero h1{font-family:'Playfair Display',serif;font-size:32px;margin:0 0 6px}
@@ -249,6 +249,9 @@ function renderGallery(){
 
   const img=document.createElement("img")
   img.src=src
+  img.loading="lazy"
+  img.decoding="async"
+  img.referrerPolicy="no-referrer"
 
   const del=document.createElement("button")
   del.className="delete"
@@ -321,6 +324,9 @@ function renderNearbyGallery(){
  photos.forEach(src=>{
   const img=document.createElement("img")
   img.src=src
+  img.loading="lazy"
+  img.decoding="async"
+  img.referrerPolicy="no-referrer"
   nearbyGallery.appendChild(img)
  })
 }

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Luxury Apartment – Хозяин</title>
-//fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;-webkit-tap-highlight-color:transparent}
@@ -84,7 +84,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 </div>
 
 <section class="grid">
-<div class="card" onclick="openPanel('WiFi',true)"><div class="icon">📶</div><h3>Wi-Fi</h3></div>
+<div class="card" onclick="openPanel('Wi-Fi',true)"><div class="icon">📶</div><h3>Wi-Fi</h3></div>
 <div class="card" onclick="openPanel('Телевизор',true)"><div class="icon">📺</div><h3>Телевизор</h3></div>
 <div class="card" onclick="openPanel('Кухня',true)"><div class="icon">🍳</div><h3>Кухня</h3></div>
 <div class="card" onclick="openPanel('Ванная',true)"><div class="icon">🚿</div><h3>Ванная</h3></div>
@@ -141,14 +141,14 @@ var nearbySection = null;
 var nearbyPhotos = [];
   // Static photos from repository
 var staticPhotos = {
-  'Wi-Fi': ['photos/wi-fi/1.jpg', 'photos/wi-fi/2.jpg', 'photos/wi-fi/3.jpg'],
+  'Wi-Fi': ['photos/wi-fi/1.jpg','photos/wi-fi/2.jpg','photos/wi-fi/3.jpg'],
   'Телевизор': [],
   'Кухня': [],
   'Ванная': [],
   'Стиральная': [],
-  'Гладильная доска + Утюг': [],
+  'Гладильная': [],
   'Комната': [],
-  'ВНИМАНИЕ': []
+  'Пожарная': []
 };
 
 var dbReq = indexedDB.open("ApartmentGuideDB", 1);

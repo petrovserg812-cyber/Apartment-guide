@@ -3,64 +3,65 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Luxury Apartment – Хозяин</title>
-//fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<title>Luxury Apartment Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;-webkit-tap-highlight-color:transparent}
+
 .container{max-width:1100px;margin:auto;padding:24px 18px 80px}
+
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .brand{font-family:'Playfair Display',serif;font-size:22px}
-.lang{display:flex;gap:8px}
-.lang button{border:none;padding:6px 10px;border-radius:8px;background:#e2e8f0;font-size:12px}
+
 .hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511') center/cover no-repeat}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55))}
-.hero-content{position:relative;z-index:2;max-width:520px;margin-left:20px}
+.hero-content{position:relative;z-index:2;max-width:520px}
 .hero h1{font-family:'Playfair Display',serif;font-size:32px;margin:0 0 6px}
 .hero p{font-size:14px;opacity:.9;margin:0}
+
 .section-title{font-size:18px;font-weight:600;margin:34px 0 16px}
+
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.card{background:white;padding:18px;border-radius:18px;box-shadow:0 8px 22px rgba(0,0,0,.06);cursor:pointer;transition:.2s}
-.card:active{transform:scale(.97)}
+
+.card{background:white;padding:18px;border-radius:18px;box-shadow:0 8px 22px rgba(0,0,0,.06);cursor:pointer}
 .icon{font-size:26px;margin-bottom:6px}
 .card h3{margin:4px 0;font-size:15px}
 .card p{margin:0;font-size:12px;color:#64748b}
-.instruction-panel{display:none;background:white;padding:20px;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.1);margin-bottom:20px}
-.close-btn{background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:6px;margin-bottom:10px;cursor:pointer}
-.edit-text{border:2px dashed #cbd5e1;padding:12px;border-radius:10px;margin-bottom:14px;background:#f8fafc;font-size:14px;min-height:60px}
-.button{background:#0f172a;color:white;border:none;padding:10px 14px;border-radius:10px;margin-bottom:14px;width:100%;cursor:pointer}
-.tv-gallery{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;flex-wrap:wrap;margin-top:10px}
-.photo-box{position:relative;display:inline-block}
-.photo-box img{height:120px;border-radius:12px;cursor:pointer;display:block}
-.delete{position:absolute;top:4px;right:4px;background:red;border:none;color:white;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;line-height:22px;text-align:center;padding:0}
-.gallery{margin-top:30px;display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+
+.gallery{margin-top:20px;display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
 .gallery img{height:140px;border-radius:14px}
-.footer{margin-top:40px;padding:20px;background:#0f172a;color:white;border-radius:20px;display:flex;flex-direction:column;gap:8px;font-size:13px}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:999}
-.modal img{max-width:95%;max-height:85%;border-radius:12px}
-.modal button{position:absolute;background:none;border:none;color:white;font-size:38px;cursor:pointer}
-#prevBtn{left:16px}
-#nextBtn{right:16px}
+
+.panel{display:none;background:white;padding:20px;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.1);margin-bottom:20px}
+
+.close-btn{background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:6px;margin-bottom:10px}
+
+.edit-text{border:2px dashed #cbd5e1;padding:12px;border-radius:10px;margin-bottom:14px;background:#f8fafc;font-size:14px}
+
+.button{background:#0f172a;color:white;border:none;padding:10px 14px;border-radius:10px;margin-bottom:14px;width:100%}
+
+.photo-box{position:relative}
+.photo-box img{height:120px;border-radius:12px}
+.delete{position:absolute;top:4px;right:4px;background:red;border:none;color:white;border-radius:50%;width:20px;height:20px;font-size:12px}
+
+.footer{margin-top:40px;padding:20px;background:#0f172a;color:white;border-radius:20px;font-size:13px}
+
 @media(min-width:900px){
 .grid{grid-template-columns:repeat(4,1fr)}
 .hero{height:360px;padding:60px}
 .hero h1{font-size:44px}
 .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));overflow:visible}
 .gallery img{height:180px;width:100%;object-fit:cover}
-.tv-gallery img{height:150px}
 }
-  /* Guest mode styles */
-  body.guest-mode .button { display: none !important; }
-  body.guest-mode .delete { display: none !important; }
-  body.guest-mode .edit-text { pointer-events: none; cursor: default; border: 2px solid #cbd5e1 !important; }
 </style>
 </head>
+
 <body>
 <div class="container">
 
 <header>
 <div class="brand">Luxury Apartment</div>
-<div class="lang"><button>RU</button><button>EN</button><button>DE</button></div>
 </header>
 
 <section class="hero">
@@ -72,38 +73,48 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 
 <div class="section-title">Квартира</div>
 
-<div id="panel" class="instruction-panel">
+<div id="panel" class="panel">
 <button class="close-btn" onclick="closePanel()">Закрыть</button>
 <h3 id="panelTitle"></h3>
 <div id="instructionText" contenteditable="true" class="edit-text">Введите инструкцию здесь.</div>
-<div id="tvControls" style="display:none">
-<button class="button" onclick="document.getElementById('upload').click()">Загрузить фото</button>
-<input type="file" id="upload" accept="image/*" multiple style="display:none">
-<div id="tvGallery" class="tv-gallery"></div>
-</div>
+<button class="button" onclick="upload.click()">Загрузить фото</button>
+<input type="file" id="upload" accept="image/*" multiple hidden>
+<div id="photoGallery" class="gallery"></div>
 </div>
 
 <section class="grid">
-<div class="card" onclick="openPanel('WiFi',true)"><div class="icon">📶</div><h3>Wi-Fi</h3></div>
-<div class="card" onclick="openPanel('Телевизор',true)"><div class="icon">📺</div><h3>Телевизор</h3></div>
-<div class="card" onclick="openPanel('Кухня',true)"><div class="icon">🍳</div><h3>Кухня</h3></div>
-<div class="card" onclick="openPanel('Ванная',true)"><div class="icon">🚿</div><h3>Ванная</h3></div>
-<div class="card" onclick="openPanel('Стиральная',true)"><div class="icon">🧺</div><h3>Стиральная</h3></div>
-<div class="card" onclick="openPanel('Гладильная',true)"><div class="icon">🧴</div><h3>Гладильная доска + Утюг</h3></div>
-<div class="card" onclick="openPanel('Комната',true)"><div class="icon">🛏</div><h3>Комната</h3></div>
-<div class="card" onclick="openPanel('Пожарная',true)"><div class="icon">🚨</div><h3>ВНИМАНИЕ</h3><p>Пожарная сигнализация</p></div>
+<div class="card" onclick="openPanel('Wi-Fi')"><div class="icon">📶</div><h3>Wi-Fi</h3></div>
+<div class="card" onclick="openPanel('Телевизор')"><div class="icon">📺</div><h3>Телевизор</h3></div>
+<div class="card" onclick="openPanel('Кухня')"><div class="icon">🍳</div><h3>Кухня</h3></div>
+<div class="card" onclick="openPanel('Диван')"><div class="icon">🧸</div><h3>Диван</h3></div>
+<div class="card" onclick="openPanel('Посудомоечная машина')"><div class="icon">🍽️</div><h3>Посудомоечная машина</h3></div>
+<div class="card" onclick="openPanel('Ванная')"><div class="icon">🚿</div><h3>Ванная</h3></div>
+<div class="card" onclick="openPanel('Стиральная машина')"><div class="icon">🧺</div><h3>Стиральная машина</h3></div>
+<div class="card" onclick="openPanel('Гладильная доска + Утюг')"><div class="icon">🧴</div><h3>Гладильная доска + Утюг</h3></div>
+<div class="card" onclick="openPanel('Комната')"><div class="icon">🛏</div><h3>Комната</h3></div>
+<div class="card" onclick="openPanel('Пожарная сигнализация')"><div class="icon">🚨</div><h3>ВНИМАНИЕ</h3><p>Пожарная сигнализация</p></div>
 </section>
 
 <div class="section-title">Фотографии квартиры</div>
-<section class="gallery">
-<img src="images/1.jpg" alt="Фото 1">
-    <img src="images/2.jpg" alt="Фото 2">
 
-<img src="images/3.jpg" alt="Фото 3">
-<img src="images/4.jpg" alt="Фото 4">
+<section class="gallery" id="apartmentGallery">
+<img src="https://raw.githubusercontent.com/petrovserg812-cyber/Apartment-guide/main/images/1.jpg" onclick="openApartmentViewer(0)">
+<img src="https://raw.githubusercontent.com/petrovserg812-cyber/Apartment-guide/main/images/2.jpg" onclick="openApartmentViewer(1)">
+<img src="https://raw.githubusercontent.com/petrovserg812-cyber/Apartment-guide/main/images/3.jpg" onclick="openApartmentViewer(2)">
+<img src="https://raw.githubusercontent.com/petrovserg812-cyber/Apartment-guide/main/images/4.jpg" onclick="openApartmentViewer(3)">
 </section>
 
 <div class="section-title">Рядом с квартирой</div>
+
+<div id="nearbyPanel" class="panel">
+<button class="close-btn" onclick="closeNearbyPanel()">Закрыть</button>
+<h3 id="nearbyTitle"></h3>
+<div id="nearbyText" contenteditable="true" class="edit-text">Введите описание здесь.</div>
+<button class="button" onclick="nearbyUpload.click()">Загрузить фото</button>
+<input type="file" id="nearbyUpload" accept="image/*" multiple hidden>
+<div id="nearbyGallery" class="gallery"></div>
+</div>
+
 <section class="grid">
 <div class="card" onclick="openNearbyPanel('Кофейня')"><div class="icon">☕</div><h3>Кофейня</h3><p>Завтраки и кофе</p></div>
 <div class="card" onclick="openNearbyPanel('Аптека')"><div class="icon">💊</div><h3>Аптека</h3><p>В этом доме</p></div>
@@ -112,227 +123,294 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 <div class="card" onclick="openNearbyPanel('1000 мелочей')"><div class="icon">🧰</div><h3>1000 мелочей</h3><p>Магазин хозяйственных товаров</p></div>
 </section>
 
-<div id="nearbyPanel" class="instruction-panel">
-<button class="close-btn" onclick="closeNearbyPanel()">Закрыть</button>
-<h3 id="nearbyTitle"></h3>
-<div id="nearbyText" contenteditable="true" class="edit-text">Введите описание здесь.</div>
-<button class="button" onclick="document.getElementById('nearbyUpload').click()">Загрузить фото</button>
-<input type="file" id="nearbyUpload" accept="image/*" multiple style="display:none">
-<div id="nearbyGallery" class="tv-gallery"></div>
-</div>
-
 <footer class="footer">
 <div><strong>Нужна помощь?</strong> WhatsApp +49 XXX XXX XXXX</div>
-<div>Отсканируйте QR-код чтобы открыть этот гид</div>
 </footer>
-</div>
 
-<div id="modal" class="modal">
-<button id="prevBtn">&#10094;</button>
-<img id="modalImg" alt="">
-<button id="nextBtn">&#10095;</button>
 </div>
 
 <script>
-var db;
-var currentSection = null;
-var currentPhotos = [];
-var currentIndex = 0;
-var nearbySection = null;
-var nearbyPhotos = [];
-  // Static photos from repository
-var staticPhotos = {
-    'Wi-Fi': [],  'Кухня': [],
-  'Ванная': [],
-  'Стиральная': [],
-    'Wi-Fi': ['photos/wifi/25.jpg', 'photos/wifi/26.jpg', 'photos/wifi/27.jpg'],  'Комната': [],
-  'ВНИМАНИЕ': []
-};
+let currentSection=null
+let photosDB={}
+let textsDB={}
 
-var dbReq = indexedDB.open("ApartmentGuideDB", 1);
+const upload=document.getElementById("upload")
+const gallery=document.getElementById("photoGallery")
+const instructionText=document.getElementById("instructionText")
 
-dbReq.onupgradeneeded = function(e) {
-  db = e.target.result;
-  if (!db.objectStoreNames.contains("photos")) {
-    var s = db.createObjectStore("photos", {keyPath:"id", autoIncrement:true});
-    s.createIndex("section", "section", {unique:false});
-  }
-  if (!db.objectStoreNames.contains("texts")) {
-    db.createObjectStore("texts");
-  }
-};
+const nearbyUpload=document.getElementById("nearbyUpload")
+const nearbyGallery=document.getElementById("nearbyGallery")
+const nearbyText=document.getElementById("nearbyText")
 
-dbReq.onsuccess = function(e) {
-  db = e.target.result;
+const GITHUB_USER="petrovserg812-cyber"
+const GITHUB_REPO="Apartment-guide"
+const GITHUB_BRANCH="main"
 
-  document.getElementById("instructionText").addEventListener("input", function() {
-    if (!currentSection) return;
-    db.transaction("texts","readwrite").objectStore("texts").put(this.innerText, currentSection);
-  });
-
-  document.getElementById("nearbyText").addEventListener("input", function() {
-    if (!nearbySection) return;
-    db.transaction("texts","readwrite").objectStore("texts").put(this.innerText, "nearby_" + nearbySection);
-  });
-
-  document.getElementById("upload").addEventListener("change", function() {
-    var files = Array.prototype.slice.call(this.files);
-    files.forEach(function(file) {
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var tx = db.transaction("photos","readwrite");
-        tx.objectStore("photos").add({section: currentSection, src: ev.target.result});
-        tx.oncomplete = function() { renderGallery(); };
-      };
-      reader.readAsDataURL(file);
-    });
-    this.value = "";
-  });
-
-  document.getElementById("nearbyUpload").addEventListener("change", function() {
-    var files = Array.prototype.slice.call(this.files);
-    files.forEach(function(file) {
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var tx = db.transaction("photos","readwrite");
-        tx.objectStore("photos").add({section: "nearby_" + nearbySection, src: ev.target.result});
-        tx.oncomplete = function() { renderNearbyGallery(); };
-      };
-      reader.readAsDataURL(file);
-    });
-    this.value = "";
-  });
-
-  document.getElementById("modal").addEventListener("click", function() {
-    this.style.display = "none";
-  });
-
-  document.getElementById("prevBtn").addEventListener("click", function(e) {
-    e.stopPropagation();
-    currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
-    document.getElementById("modalImg").src = currentPhotos[currentIndex].src;
-  });
-
-  document.getElementById("nextBtn").addEventListener("click", function(e) {
-    e.stopPropagation();
-    currentIndex = (currentIndex + 1) % currentPhotos.length;
-    document.getElementById("modalImg").src = currentPhotos[currentIndex].src;
-  });
-};
-
-function openPanel(title, isTV) {
-  document.getElementById("panel").style.display = "block";
-  document.getElementById("panelTitle").innerText = title;
-  document.getElementById("tvControls").style.display = isTV ? "block" : "none";
-  currentSection = title;
-    if (!db) { return; }
-    var r = db.transaction("texts","readonly").objectStore("texts").get(title);
-  r.onsuccess = function() {
-    document.getElementById("instructionText").innerText = r.result || "";
-  };
-  renderGallery();
+const githubFolders={
+ "Wi-Fi":"photos/wi-fi",
+ "Телевизор":"photos/tv",
+ "Кухня":"photos/kitchen",
+ "Диван":"photos/Divan",
+ "Посудомоечная машина":"photos/Posudomoyechnaya",
+ "Ванная":"photos/bathroom",
+ "Стиральная машина":"photos/washer",
+ "Гладильная доска + Утюг":"photos/iron",
+ "Комната":"photos/room",
+ "Пожарная сигнализация":"photos/alert"
 }
 
-function closePanel() {
-  document.getElementById("panel").style.display = "none";
+async function loadGitHubPhotos(section){
+ const folder=githubFolders[section]
+ if(!folder) return
+
+ const url=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folder}?ref=${GITHUB_BRANCH}`
+
+ try{
+  const res=await fetch(url)
+  const data=await res.json()
+
+  if(!Array.isArray(data)) return
+
+  photosDB[section]=data
+   .filter(f=>f.type==="file")
+   .map(f=>f.download_url)
+
+ }catch(e){
+  console.error("GitHub load error",e)
+ }
 }
 
-function renderGallery() {
-  if (!currentSection) return;
-    if (!db) return;
-  var idx = db.transaction("photos","readonly").objectStore("photos").index("section");
-  var r = idx.getAll(IDBKeyRange.only(currentSection));
-  r.onsuccess = function() {
-      var photos = r.result;
-      currentPhotos = photos;
-            // Add static photos from repository
-        var staticPhotosList = staticPhotos[currentSection] || [];
-        var staticPhotoObjects = staticPhotosList.map(function(src, i) {
-          return {id: 'static_' + i, src: src, isStatic: true};
-        });
-        photos = staticPhotoObjects.concat(photos);
-      var gallery = document.getElementById('tvGallery');
-      gallery.innerHTML = '';
-      photos.forEach(function(photo, i) {
-        var box = document.createElement('div');
-        box.className = 'photo-box';
-        var img = document.createElement('img');
-        img.src = photo.src;
-        img.onclick = (function(idx) { return function() { openModal(idx); }; })(i);
-                box.appendChild(img);        
-        if (!photo.isStatic) { var del = document.createElement('button');
-        del.className = 'delete';
-        del.textContent = '×';
-        del.onclick = (function(id) { return function(e) { e.stopPropagation(); deletePhoto(id); }; })(photo.id);
-      
-        box.appendChild(del);
-                                              }
-        gallery.appendChild(box);
-      });
-    };
+async function openPanel(title){
+ const panel=document.getElementById("panel")
+ if(panel) panel.style.display="block"
+
+ document.getElementById("panelTitle").innerText=title
+ currentSection=title
+
+ instructionText.innerText=textsDB[title]||"Введите инструкцию"
+
+ if(!photosDB[title]){
+  await loadGitHubPhotos(title)
+ }
+
+ renderGallery()
+}
+
+function closePanel(){
+ const panel=document.getElementById("panel")
+ if(panel) panel.style.display="none"
+}
+
+instructionText.addEventListener("input",()=>{
+ if(!currentSection) return
+ textsDB[currentSection]=instructionText.innerText
+})
+
+function renderGallery(){
+ gallery.innerHTML=""
+ const photos=photosDB[currentSection]||[]
+
+ photos.forEach((src,i)=>{
+  const box=document.createElement("div")
+  box.className="photo-box"
+
+  const img=document.createElement("img")
+  img.src=src
+  img.style.cursor="pointer"
+  img.onclick=()=>{
+   viewerPhotos=photos
+   viewerIndex=i
+   const viewer=document.getElementById('viewer')
+   if(viewer) viewer.style.display='flex'
+   showViewerPhoto()
   }
 
-  function deletePhoto(id) {
-    var tx = db.transaction('photos', 'readwrite');
-    tx.objectStore('photos').delete(id);
-    tx.oncomplete = function() { renderGallery(); };
+  const del=document.createElement("button")
+  del.className="delete"
+  del.innerHTML="×"
+  del.onclick=()=>{
+   photos.splice(i,1)
+   renderGallery()
   }
 
-  function openModal(idx) {
-    currentIndex = idx;
-    document.getElementById('modalImg').src = currentPhotos[idx].src;
-    document.getElementById('modal').style.display = 'flex';
-  }
+  box.appendChild(img)
+  box.appendChild(del)
+  gallery.appendChild(box)
+ })
+}
 
-  function openNearbyPanel(title) {
-    document.getElementById('nearbyPanel').style.display = 'block';
-    document.getElementById('nearbyTitle').innerText = title;
-    nearbySection = title;
-    if (!db) { return; }
-    var r = db.transaction('texts','readonly').objectStore('texts').get('nearby_' + title);
-    r.onsuccess = function() {
-      document.getElementById('nearbyText').innerText = r.result || '';
-    };
-    renderNearbyGallery();
-  }
+upload.addEventListener("change",function(){
+ const files=[...this.files]
+ if(!photosDB[currentSection]) photosDB[currentSection]=[]
 
-  function closeNearbyPanel() {
-    document.getElementById('nearbyPanel').style.display = 'none';
+ files.forEach(file=>{
+  const reader=new FileReader()
+  reader.onload=e=>{
+   photosDB[currentSection].push(e.target.result)
+   renderGallery()
   }
+  reader.readAsDataURL(file)
+ })
+})
 
-  function renderNearbyGallery() {
-    if (!nearbySection || !db) return;
-    var idx = db.transaction('photos','readonly').objectStore('photos').index('section');
-    var r = idx.getAll(IDBKeyRange.only('nearby_' + nearbySection));
-    r.onsuccess = function() {
-      nearbyPhotos = r.result;
-      var gallery = document.getElementById('nearbyGallery');
-      gallery.innerHTML = '';
-      r.result.forEach(function(photo, i) {
-        var box = document.createElement('div');
-        box.className = 'photo-box';
-        var img = document.createElement('img');
-        img.src = photo.src;
-        var del = document.createElement('button');
-        del.className = 'delete';
-        del.textContent = '×';
-        del.onclick = (function(id) { return function(e) { e.stopPropagation(); deleteNearbyPhoto(id); }; })(photo.id);
-        box.appendChild(img);
-        box.appendChild(del);
-        gallery.appendChild(box);
-      });
-    };
+const githubNearbyFolders={
+ "Кофейня":"Adres magazinov/Coffee",
+ "Аптека":"Adres magazinov/Pharmacy",
+ "Супермаркет":"Adres magazinov/Supermarket",
+ "МЦД":"Adres magazinov/MCD",
+ "1000 мелочей":"Adres magazinov/1000"
+}
+
+let nearbySection=null
+
+async function loadNearbyGitHubPhotos(section){
+ const folder=githubNearbyFolders[section]
+ if(!folder) return
+
+ const url=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folder}?ref=${GITHUB_BRANCH}`
+
+ try{
+  const res=await fetch(url)
+  const data=await res.json()
+
+  if(!Array.isArray(data)) return
+
+  photosDB["nearby_"+section]=data
+   .filter(f=>f.type==="file")
+   .map(f=>f.download_url)
+
+ }catch(e){
+  console.error("Nearby GitHub load error",e)
+ }
+}
+
+async function openNearbyPanel(title){
+ const panel=document.getElementById("nearbyPanel")
+ if(panel) panel.style.display="block"
+
+ document.getElementById("nearbyTitle").innerText=title
+ nearbySection=title
+
+ nearbyText.innerText=textsDB["nearby_"+title]||"Введите описание"
+
+ if(!photosDB["nearby_"+title]){
+  await loadNearbyGitHubPhotos(title)
+ }
+
+ renderNearbyGallery()
+}
+
+function closeNearbyPanel(){
+ const panel=document.getElementById("nearbyPanel")
+ if(panel) panel.style.display="none"
+}
+
+nearbyText.addEventListener("input",()=>{
+ if(!nearbySection) return
+ textsDB["nearby_"+nearbySection]=nearbyText.innerText
+})
+
+function renderNearbyGallery(){
+ nearbyGallery.innerHTML=""
+ const photos=photosDB["nearby_"+nearbySection]||[]
+
+ photos.forEach((src,i)=>{
+  const img=document.createElement("img")
+  img.src=src
+  img.style.cursor="pointer"
+  img.onclick=()=>{
+   viewerPhotos=photos
+   viewerIndex=i
+   const viewer=document.getElementById('viewer')
+   if(viewer) viewer.style.display='flex'
+   showViewerPhoto()
   }
+  nearbyGallery.appendChild(img)
+ })
+}
 
-  function deleteNearbyPhoto(id) {
-    var tx = db.transaction('photos','readwrite');
-    tx.objectStore('photos').delete(id);
-    tx.oncomplete = function() { renderNearbyGallery(); };
+let viewerPhotos=[]
+let viewerIndex=0
+let startX=0
+let scale=1
+
+function openApartmentViewer(index){
+ const imgs=[...document.querySelectorAll('#apartmentGallery img')]
+ viewerPhotos=imgs.map(i=>i.src)
+ viewerIndex=index
+ scale=1
+ const viewer=document.getElementById('viewer')
+ const img=document.getElementById('viewerImg')
+ if(img) img.style.transform='scale(1)'
+ if(viewer) viewer.style.display='flex'
+ showViewerPhoto()
+}
+
+function showViewerPhoto(){
+ const img=document.getElementById('viewerImg')
+ if(!img) return
+ img.src=viewerPhotos[viewerIndex]
+}
+
+function nextPhoto(){
+ viewerIndex++
+ if(viewerIndex>=viewerPhotos.length) viewerIndex=0
+ showViewerPhoto()
+}
+
+function prevPhoto(){
+ viewerIndex--
+ if(viewerIndex<0) viewerIndex=viewerPhotos.length-1
+ showViewerPhoto()
+}
+
+function closeViewer(){
+ const viewer=document.getElementById('viewer')
+ if(viewer) viewer.style.display='none'
+}
+
+const viewerElement=document.getElementById('viewer')
+if(viewerElement){
+ viewerElement.addEventListener('touchstart',e=>{
+  startX=e.touches[0].clientX
+ })
+
+ viewerElement.addEventListener('touchend',e=>{
+  const endX=e.changedTouches[0].clientX
+  const diff=endX-startX
+  if(diff>50) prevPhoto()
+  if(diff<-50) nextPhoto()
+ })
+}
+
+const viewerImg=document.getElementById('viewerImg')
+if(viewerImg){
+ viewerImg.addEventListener('wheel',e=>{
+  e.preventDefault()
+  scale+=e.deltaY<0?0.1:-0.1
+  if(scale<1) scale=1
+  if(scale>3) scale=3
+  viewerImg.style.transform=`scale(${scale})`
+ })
+
+ let lastTap=0
+ viewerImg.addEventListener('touchend',()=>{
+  const now=Date.now()
+  if(now-lastTap<300){
+   scale=scale===1?2:1
+   viewerImg.style.transform=`scale(${scale})`
   }
-
-  if (window.location.search.includes('guest=1')) {
-        document.body.classList.add('guest-mode');
-    }
+  lastTap=now
+ })
+}
 </script>
+
+<div id="viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;">
+<button onclick="closeViewer()" style="position:absolute;top:20px;right:20px;background:rgba(0,0,0,.6);color:white;border:none;font-size:26px;padding:8px 14px;border-radius:8px;">✕</button>
+<button onclick="prevPhoto()" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:40px;background:rgba(0,0,0,.4);color:white;border:none;padding:10px 18px;border-radius:10px;">❮</button>
+<img id="viewerImg" style="max-width:95vw;max-height:95vh;object-fit:contain;border-radius:8px;">
+<button onclick="nextPhoto()" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:40px;background:rgba(0,0,0,.4);color:white;border:none;padding:10px 18px;border-radius:10px;">❯</button>
+</div>
+
 </body>
 </html>

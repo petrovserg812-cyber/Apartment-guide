@@ -15,8 +15,8 @@ body{margin:0;font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;-w
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .brand{font-family:'Playfair Display',serif;font-size:22px}
 
-.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511') center/cover no-repeat}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55))}
+.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('images/hero.jpg') center/cover no-repeat}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.25))}
 .hero-content{position:relative;z-index:2;max-width:520px}
 .hero h1{font-family:'Playfair Display',serif;font-size:32px;margin:0 0 6px}
 .hero p{font-size:14px;opacity:.9;margin:0}
@@ -159,30 +159,63 @@ const githubFolders={
  "Пожарная сигнализация":"photos/alert"
 }
 
-async function loadGitHubPhotos(section){
- const folder=githubFolders[section]
- if(!folder) return
+// универсальная функция загрузки фото из GitHub
+// работает и в GitHub Pages и в Preview (двойной способ загрузки)
+async function loadFolderPhotos(folder){
+ try{
+  // 1 способ — быстрый CDN jsDelivr
+  const cdnUrl=`https://data.jsdelivr.com/v1/package/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/files/${folder}`
+  const cdnRes=await fetch(cdnUrl)
 
- const url=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folder}?ref=${GITHUB_BRANCH}`
+  if(cdnRes.ok){
+   const data=await cdnRes.json()
+   if(data && data.files){
+    return data.files
+     .filter(f=>f.type==="file")
+     .map(f=>`https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/${folder}/${f.name}`)
+   }
+  }
+ }catch(e){
+  console.warn("CDN load failed, trying GitHub API")
+ }
 
  try{
-  const res=await fetch(url)
+  // 2 способ — GitHub API (работает в Preview)
+  const apiUrl=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folder}?ref=${GITHUB_BRANCH}`
+  const res=await fetch(apiUrl)
   const data=await res.json()
 
-  if(!Array.isArray(data)) return
-
-  photosDB[section]=data
-   .filter(f=>f.type==="file")
-   .map(f=>f.download_url)
-
+  if(Array.isArray(data)){
+   return data
+    .filter(f=>f.type==="file")
+    .map(f=>f.download_url)
+  }
  }catch(e){
-  console.error("GitHub load error",e)
+  console.error("GitHub API load error",e)
+ }
+
+ return []
+}
+
+// предзагрузка всех фото при открытии сайта
+async function preloadAllPhotos(){
+ for(const key in githubFolders){
+  const folder=githubFolders[key]
+  photosDB[key]=await loadFolderPhotos(folder)
+ }
+
+ for(const key in githubNearbyFolders){
+  const folder=githubNearbyFolders[key]
+  photosDB["nearby_"+key]=await loadFolderPhotos(folder)
  }
 }
 
+// запуск предзагрузки
+window.addEventListener("load",preloadAllPhotos)
+
 async function openPanel(title){
  const panel=document.getElementById("panel")
- if(panel) panel.style.display="block"
+ panel.style.display="block"
 
  document.getElementById("panelTitle").innerText=title
  currentSection=title
@@ -190,15 +223,15 @@ async function openPanel(title){
  instructionText.innerText=textsDB[title]||"Введите инструкцию"
 
  if(!photosDB[title]){
-  await loadGitHubPhotos(title)
+  const folder=githubFolders[title]
+  photosDB[title]=await loadFolderPhotos(folder)
  }
 
  renderGallery()
 }
 
 function closePanel(){
- const panel=document.getElementById("panel")
- if(panel) panel.style.display="none"
+ document.getElementById("panel").style.display="none"
 }
 
 instructionText.addEventListener("input",()=>{
@@ -216,14 +249,6 @@ function renderGallery(){
 
   const img=document.createElement("img")
   img.src=src
-  img.style.cursor="pointer"
-  img.onclick=()=>{
-   viewerPhotos=photos
-   viewerIndex=i
-   const viewer=document.getElementById('viewer')
-   if(viewer) viewer.style.display='flex'
-   showViewerPhoto()
-  }
 
   const del=document.createElement("button")
   del.className="delete"
@@ -263,30 +288,9 @@ const githubNearbyFolders={
 
 let nearbySection=null
 
-async function loadNearbyGitHubPhotos(section){
- const folder=githubNearbyFolders[section]
- if(!folder) return
-
- const url=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folder}?ref=${GITHUB_BRANCH}`
-
- try{
-  const res=await fetch(url)
-  const data=await res.json()
-
-  if(!Array.isArray(data)) return
-
-  photosDB["nearby_"+section]=data
-   .filter(f=>f.type==="file")
-   .map(f=>f.download_url)
-
- }catch(e){
-  console.error("Nearby GitHub load error",e)
- }
-}
-
 async function openNearbyPanel(title){
  const panel=document.getElementById("nearbyPanel")
- if(panel) panel.style.display="block"
+ panel.style.display="block"
 
  document.getElementById("nearbyTitle").innerText=title
  nearbySection=title
@@ -294,15 +298,15 @@ async function openNearbyPanel(title){
  nearbyText.innerText=textsDB["nearby_"+title]||"Введите описание"
 
  if(!photosDB["nearby_"+title]){
-  await loadNearbyGitHubPhotos(title)
+  const folder=githubNearbyFolders[title]
+  photosDB["nearby_"+title]=await loadFolderPhotos(folder)
  }
 
  renderNearbyGallery()
 }
 
 function closeNearbyPanel(){
- const panel=document.getElementById("nearbyPanel")
- if(panel) panel.style.display="none"
+ document.getElementById("nearbyPanel").style.display="none"
 }
 
 nearbyText.addEventListener("input",()=>{
@@ -314,93 +318,10 @@ function renderNearbyGallery(){
  nearbyGallery.innerHTML=""
  const photos=photosDB["nearby_"+nearbySection]||[]
 
- photos.forEach((src,i)=>{
+ photos.forEach(src=>{
   const img=document.createElement("img")
   img.src=src
-  img.style.cursor="pointer"
-  img.onclick=()=>{
-   viewerPhotos=photos
-   viewerIndex=i
-   const viewer=document.getElementById('viewer')
-   if(viewer) viewer.style.display='flex'
-   showViewerPhoto()
-  }
   nearbyGallery.appendChild(img)
- })
-}
-
-let viewerPhotos=[]
-let viewerIndex=0
-let startX=0
-let scale=1
-
-function openApartmentViewer(index){
- const imgs=[...document.querySelectorAll('#apartmentGallery img')]
- viewerPhotos=imgs.map(i=>i.src)
- viewerIndex=index
- scale=1
- const viewer=document.getElementById('viewer')
- const img=document.getElementById('viewerImg')
- if(img) img.style.transform='scale(1)'
- if(viewer) viewer.style.display='flex'
- showViewerPhoto()
-}
-
-function showViewerPhoto(){
- const img=document.getElementById('viewerImg')
- if(!img) return
- img.src=viewerPhotos[viewerIndex]
-}
-
-function nextPhoto(){
- viewerIndex++
- if(viewerIndex>=viewerPhotos.length) viewerIndex=0
- showViewerPhoto()
-}
-
-function prevPhoto(){
- viewerIndex--
- if(viewerIndex<0) viewerIndex=viewerPhotos.length-1
- showViewerPhoto()
-}
-
-function closeViewer(){
- const viewer=document.getElementById('viewer')
- if(viewer) viewer.style.display='none'
-}
-
-const viewerElement=document.getElementById('viewer')
-if(viewerElement){
- viewerElement.addEventListener('touchstart',e=>{
-  startX=e.touches[0].clientX
- })
-
- viewerElement.addEventListener('touchend',e=>{
-  const endX=e.changedTouches[0].clientX
-  const diff=endX-startX
-  if(diff>50) prevPhoto()
-  if(diff<-50) nextPhoto()
- })
-}
-
-const viewerImg=document.getElementById('viewerImg')
-if(viewerImg){
- viewerImg.addEventListener('wheel',e=>{
-  e.preventDefault()
-  scale+=e.deltaY<0?0.1:-0.1
-  if(scale<1) scale=1
-  if(scale>3) scale=3
-  viewerImg.style.transform=`scale(${scale})`
- })
-
- let lastTap=0
- viewerImg.addEventListener('touchend',()=>{
-  const now=Date.now()
-  if(now-lastTap<300){
-   scale=scale===1?2:1
-   viewerImg.style.transform=`scale(${scale})`
-  }
-  lastTap=now
  })
 }
 </script>

@@ -15,7 +15,7 @@ body{margin:0;font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;-w
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .brand{font-family:'Playfair Display',serif;font-size:22px}
 
-.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('images/apartment.jpg') center/cover no-repeat}
+.hero{position:relative;border-radius:24px;overflow:hidden;height:260px;display:flex;align-items:center;padding:28px;margin-bottom:36px;color:white;background:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511') center/cover no-repeat}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.25))}
 .hero-content{position:relative;z-index:2;max-width:520px}
 .hero h1{font-family:'Playfair Display',serif;font-size:32px;margin:0 0 6px}
@@ -159,28 +159,8 @@ const githubFolders={
  "Пожарная сигнализация":"photos/alert"
 }
 
-// универсальная функция загрузки фото из GitHub
-// работает и в GitHub Pages и в Preview (двойной способ загрузки)
 async function loadFolderPhotos(folder){
  try{
-  // 1 способ — быстрый CDN jsDelivr
-  const cdnUrl=`https://data.jsdelivr.com/v1/package/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/files/${folder}`
-  const cdnRes=await fetch(cdnUrl)
-
-  if(cdnRes.ok){
-   const data=await cdnRes.json()
-   if(data && data.files){
-    return data.files
-     .filter(f=>f.type==="file")
-     .map(f=>`https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${GITHUB_REPO}@${GITHUB_BRANCH}/${folder}/${f.name}`)
-   }
-  }
- }catch(e){
-  console.warn("CDN load failed, trying GitHub API")
- }
-
- try{
-  // 2 способ — GitHub API (работает в Preview)
   const apiUrl=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folder}?ref=${GITHUB_BRANCH}`
   const res=await fetch(apiUrl)
   const data=await res.json()
@@ -188,16 +168,15 @@ async function loadFolderPhotos(folder){
   if(Array.isArray(data)){
    return data
     .filter(f=>f.type==="file")
-    .map(f=>f.download_url)
+    .map(f=>`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${folder}/${f.name}`)
   }
  }catch(e){
-  console.error("GitHub API load error",e)
+  console.error("GitHub load error",e)
  }
 
  return []
 }
 
-// предзагрузка всех фото при открытии сайта
 async function preloadAllPhotos(){
  for(const key in githubFolders){
   const folder=githubFolders[key]
@@ -210,7 +189,6 @@ async function preloadAllPhotos(){
  }
 }
 
-// запуск предзагрузки
 window.addEventListener("load",preloadAllPhotos)
 
 async function openPanel(title){
@@ -249,9 +227,7 @@ function renderGallery(){
 
   const img=document.createElement("img")
   img.src=src
-  img.loading="lazy"
-  img.decoding="async"
-  img.referrerPolicy="no-referrer"
+  img.onclick=()=>openViewer(src)
 
   const del=document.createElement("button")
   del.className="delete"
@@ -321,15 +297,63 @@ function renderNearbyGallery(){
  nearbyGallery.innerHTML=""
  const photos=photosDB["nearby_"+nearbySection]||[]
 
- photos.forEach(src=>{
+ photos.forEach((src,i)=>{
   const img=document.createElement("img")
   img.src=src
-  img.loading="lazy"
-  img.decoding="async"
-  img.referrerPolicy="no-referrer"
+  img.onclick=()=>{
+   viewerImages=[...photos]
+   viewerIndex=i
+   document.getElementById("viewer").style.display="flex"
+   document.getElementById("viewerImg").src=viewerImages[viewerIndex]
+  }
+
   nearbyGallery.appendChild(img)
  })
 }
+let viewerIndex=0
+let viewerImages=[]
+
+function openViewer(src){
+ const viewer=document.getElementById("viewer")
+ const img=document.getElementById("viewerImg")
+
+ const photos=photosDB[currentSection]||[]
+ viewerImages=[...photos]
+ viewerIndex=viewerImages.indexOf(src)
+ if(viewerIndex<0) viewerIndex=0
+
+ viewer.style.display="flex"
+ img.src=viewerImages[viewerIndex]
+}
+
+function openApartmentViewer(index){
+ const imgs=[...document.querySelectorAll("#apartmentGallery img")]
+ viewerImages=imgs.map(i=>i.src)
+ viewerIndex=index
+ const viewer=document.getElementById("viewer")
+ const img=document.getElementById("viewerImg")
+ viewer.style.display="flex"
+ img.src=viewerImages[viewerIndex]
+}
+
+function nextPhoto(){
+ if(viewerImages.length===0) return
+ viewerIndex++
+ if(viewerIndex>=viewerImages.length) viewerIndex=0
+ document.getElementById("viewerImg").src=viewerImages[viewerIndex]
+}
+
+function prevPhoto(){
+ if(viewerImages.length===0) return
+ viewerIndex--
+ if(viewerIndex<0) viewerIndex=viewerImages.length-1
+ document.getElementById("viewerImg").src=viewerImages[viewerIndex]
+}
+
+function closeViewer(){
+ document.getElementById("viewer").style.display="none"
+}
+
 </script>
 
 <div id="viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;">

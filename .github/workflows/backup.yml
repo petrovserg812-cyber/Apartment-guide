@@ -1,4 +1,4 @@
-name: Backup Repository
+name: Auto Backup
 
 on:
   push:
@@ -10,12 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Create backup branch
+      - name: Push to backup branch
         run: |
           git config --global user.name "backup-bot"
           git config --global user.email "backup@github.com"
+
+          git fetch origin
           git checkout -B backup
+          git merge origin/main --no-edit
+
           git push origin backup --force

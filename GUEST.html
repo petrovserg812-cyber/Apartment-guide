@@ -76,8 +76,8 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 <div id="panel" class="panel">
 <button class="close-btn" onclick="closePanel()">Закрыть</button>
 <h3 id="panelTitle"></h3>
-<div id="instructionText" contenteditable="true" class="edit-text">Введите инструкцию здесь.</div>
-<button class="button" onclick="upload.click()">Загрузить фото</button>
+<div id="instructionText" contenteditable="false" class="edit-text">Введите инструкцию здесь.</div>
+
 <input type="file" id="upload" accept="image/*" multiple hidden>
 <div id="photoGallery" class="gallery"></div>
 </div>
@@ -229,16 +229,16 @@ function renderGallery(){
   img.src=src
   img.onclick=()=>openViewer(src)
 
-  const del=document.createElement("button")
-  del.className="delete"
-  del.innerHTML="×"
-  del.onclick=()=>{
-   photos.splice(i,1)
-   renderGallery()
-  }
+  
+  
+  
+  
+  
+  
+ 
 
   box.appendChild(img)
-  box.appendChild(del)
+ 
   gallery.appendChild(box)
  })
 }

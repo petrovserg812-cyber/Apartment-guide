@@ -133,7 +133,12 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 </div>
 
 <script>
+ const pass = prompt("Введите пароль")
 
+if(pass !== "1234"){
+ document.body.innerHTML = "Доступ запрещен"
+ throw new Error("No access")
+}
 let currentSection=null
 let photosDB={}
 let textsDB={}

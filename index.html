@@ -86,6 +86,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 </div>
 
 <section class="grid">
+<div class="card" onclick="openPanel('Правила проживания')"><div class="icon">📋</div><h3>Правила проживания</h3></div>
 <div class="card" onclick="openPanel('Wi-Fi')"><div class="icon">📶</div><h3>Wi-Fi</h3></div>
 <div class="card" onclick="openPanel('Телевизор')"><div class="icon">📺</div><h3>Телевизор</h3></div>
 <div class="card" onclick="openPanel('Кухня')"><div class="icon">🍳</div><h3>Кухня</h3></div>
@@ -159,7 +160,8 @@ const githubFolders={
  "Стиральная машина":"photos/washer",
  "Гладильная доска + Утюг":"photos/iron",
  "Комната":"photos/room",
- "Пожарная сигнализация":"photos/alert"
+ "Пожарная сигнализация":"photos/alert",
+ "Правила проживания":"photos/Pravilo"
 }
 
 async function loadFolderPhotos(folder){
@@ -170,7 +172,7 @@ async function loadFolderPhotos(folder){
 
   if(Array.isArray(data)){
    return data
-    .filter(f=>f.type==="file")
+    .filter(f=>f.type==="file" && f.name.match(/\.(jpg|jpeg|png|webp|gif)$/i))
     .map(f=>`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${folder}/${f.name}`)
   }
  }catch(e){
@@ -313,6 +315,7 @@ function renderNearbyGallery(){
   nearbyGallery.appendChild(img)
  })
 }
+
 let viewerIndex=0
 let viewerImages=[]
 
@@ -359,19 +362,19 @@ function closeViewer(){
 
 document.addEventListener("contextmenu", e => e.preventDefault())
 
- document.addEventListener("keydown", function(e) {
+document.addEventListener("keydown", function(e) {
  if (e.key === "F12") {
   e.preventDefault()
  }
 
-  if (e.ctrlKey && e.shiftKey && e.key === "I") {
+ if (e.ctrlKey && e.shiftKey && e.key === "I") {
   e.preventDefault()
  }
 
-if (e.ctrlKey && e.key === "u") {
+ if (e.ctrlKey && e.key === "u") {
   e.preventDefault()
  }
-})  
+})
 </script>
 
 <div id="viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;">
@@ -383,4 +386,3 @@ if (e.ctrlKey && e.key === "u") {
 
 </body>
 </html>
-

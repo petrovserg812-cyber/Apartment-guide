@@ -370,7 +370,11 @@ document.addEventListener("contextmenu", e => e.preventDefault())
   if (e.ctrlKey && e.shiftKey && e.key === "I") {
   e.preventDefault()
  }
-})
+
+if (e.ctrlKey && e.key === "u") {
+  e.preventDefault()
+ }
+})  
 </script>
 
 <div id="viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;">

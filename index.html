@@ -359,7 +359,11 @@ function prevPhoto(){
 function closeViewer(){
  document.getElementById("viewer").style.display="none"
 }
+function closeViewer(){
+ document.getElementById("viewer").style.display="none"
+}
 
+document.addEventListener("contextmenu", e => e.preventDefault())
 </script>
 
 <div id="viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;">
